@@ -9,17 +9,28 @@ group 'org.imd.oauth2'
 sourceCompatibility = '17'
 version '1.0-SNAPSHOT'
 
+ext {
+    mapstructVersion = '1.5.3.Final'
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework:spring-beans'
     implementation "org.springframework.security:spring-security-oauth2-authorization-server:1.0.0"
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
 }
 
 test {
