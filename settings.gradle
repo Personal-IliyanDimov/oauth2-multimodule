@@ -1,0 +1,3 @@
+rootProject.name = 'oauth2-multimodule'
+include 'authorization-server'
+

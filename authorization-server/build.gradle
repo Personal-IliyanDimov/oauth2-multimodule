@@ -1,0 +1,28 @@
+plugins {
+    id 'org.springframework.boot' version '3.0.2'
+    id 'java'
+    id 'application'
+}
+
+group 'org.imd.oauth2'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.springframework.security:spring-security-oauth2-authorization-server:1.0.0"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+application {
+    mainClass = 'org.imd.oauth2.authorizationserver.Main'
+}
+
