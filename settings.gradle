@@ -1,3 +1,5 @@
 rootProject.name = 'oauth2-multimodule'
 include 'authorization-server'
+include 'client-credentials-flow-consumer'
+include 'resource-server'
 

@@ -7,6 +7,7 @@ plugins {
 
 group 'org.imd.oauth2'
 sourceCompatibility = '17'
+
 version '1.0-SNAPSHOT'
 
 ext {
@@ -23,7 +24,6 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    // implementation 'org.springframework:spring-beans'
     implementation "org.springframework.security:spring-security-oauth2-authorization-server:1.0.0"
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
@@ -38,6 +38,6 @@ test {
 }
 
 application {
-    mainClass = 'org.imd.oauth2.authorizationserver.Main'
+    mainClass = 'org.imd.oauth2.authorizationserver.AuthorizationServerApplication'
 }
 
