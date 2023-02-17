@@ -1,4 +1,4 @@
-package org.example;
+package org.imd.oauth2.resourceserver;
 
 public class Main {
     public static void main(String[] args) {
