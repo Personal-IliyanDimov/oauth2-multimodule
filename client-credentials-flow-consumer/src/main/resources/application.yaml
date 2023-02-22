@@ -41,6 +41,7 @@ spring:
             authorization-grant-type: client_credentials
             scope: message.read,message.write
             client-name: messaging-client-client-credentials
+
         provider:
           spring:
             issuer-uri: http://localhost:9090

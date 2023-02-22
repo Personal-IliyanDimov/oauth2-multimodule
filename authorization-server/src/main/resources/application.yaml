@@ -11,3 +11,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+client:
+  application:
+    port: 7070
+

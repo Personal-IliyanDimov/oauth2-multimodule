@@ -10,6 +10,6 @@ import org.springframework.stereotype.Component;
 @Setter
 @Component
 public class SecuritySettings {
-    @Value("${server.port}")
-    private String authorizationServerPort;
+    @Value("${client.application.port}")
+    private String clientApplicationPort;
 }
