@@ -117,6 +117,7 @@ public class SecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .redirectUri("http://127.0.0.1:" + settings.getClientApplicationPort() + "/login/oauth2/code/messaging-client-oidc")
                 .redirectUri("http://127.0.0.1:" + settings.getClientApplicationPort() + "/authorized")
+                .redirectUri("https://oauth.pstmn.io/v1/callback")
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
                 .scope("message.read")
