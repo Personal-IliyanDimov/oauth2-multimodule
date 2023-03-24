@@ -19,10 +19,18 @@ repositories {
 }
 
 dependencies {
+    // resource server related
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
 
+    // acl only related
+    implementation "org.springframework.security:spring-security-acl"
+    implementation "org.springframework.security:spring-security-config"
+    implementation "org.springframework:spring-context-support"
+    implementation "net.sf.ehcache:ehcache-core"
+
+    // test apps
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }

@@ -3,8 +3,8 @@
 # Links: 
 - https://docs.spring.io/spring-boot/docs/3.0.2/gradle-plugin/reference/pdf/spring-boot-gradle-plugin-reference.pdf
 
+- https://www.baeldung.com/spring-security-acl
 
-# Actuator links:
 - 
 
 
