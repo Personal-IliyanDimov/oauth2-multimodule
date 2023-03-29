@@ -14,3 +14,17 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:9090
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/resource-server-db"
+    username: postgres
+    password: postgres
+
+  zipkin:
+    enabled: false

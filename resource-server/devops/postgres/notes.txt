@@ -1,0 +1,11 @@
+Start docker compose
+>> docker-compose -f stack.yml up
+
+Adminer:
+>> http://localhost:5050
+ UN: postgres
+PWD: postgres
+
+
+
+

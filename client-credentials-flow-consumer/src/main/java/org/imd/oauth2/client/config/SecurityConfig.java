@@ -1,4 +1,4 @@
-package org.imd.oauth2.resourceserver.config;
+package org.imd.oauth2.client.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
