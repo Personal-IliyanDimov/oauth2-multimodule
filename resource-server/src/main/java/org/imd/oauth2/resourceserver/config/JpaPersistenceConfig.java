@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "org.imd.oauth2.resourceserver.model.repos")
 // @PropertySource("classpath:com.baeldung.acl.datasource.properties") ?
-@EntityScan(basePackages={ "org.imd.oauth2.resourceserver.model.entity" })
+@EntityScan(basePackages={ "org.imd.oauth2.resourceserver.model.entities" })
 public class JpaPersistenceConfig {
 
 }
