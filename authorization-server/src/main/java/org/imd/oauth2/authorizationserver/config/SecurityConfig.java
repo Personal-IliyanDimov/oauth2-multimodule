@@ -95,13 +95,25 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails userDetails = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
-                .roles("USER")
+        final UserDetails john = User.withDefaultPasswordEncoder()
+                .username("john")
+                .password("john")
+                .roles("BLOG_USER")
                 .build();
 
-        return new InMemoryUserDetailsManager(userDetails);
+        final UserDetails sara = User.withDefaultPasswordEncoder()
+                .username("sara")
+                .password("sara")
+                .roles("BLOG_USER")
+                .build();
+
+        final UserDetails skynet = User.withDefaultPasswordEncoder()
+                .username("skynet")
+                .password("skynet")
+                .roles("BLOG_ADMIN")
+                .build();
+
+        return new InMemoryUserDetailsManager(john, sara, skynet);
     }
 
     @Bean
@@ -119,8 +131,8 @@ public class SecurityConfig {
                 .redirectUri("https://oauth.pstmn.io/v1/callback")
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
-                .scope("message.read")
-                .scope("message.write")
+                .scope("posts")
+                .scope("postcomments")
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                 .build();
 

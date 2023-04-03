@@ -4,6 +4,7 @@ server:
 logging:
   level:
     root: INFO
+    org.flywaydb: DEBUG
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
@@ -17,8 +18,8 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
-    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
 
   datasource:
@@ -28,3 +29,6 @@ spring:
 
   zipkin:
     enabled: false
+
+  flyway:
+    locations: classpath:migration

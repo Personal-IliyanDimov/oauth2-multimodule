@@ -11,5 +11,4 @@
 
 # Git Ignore:
 - git rm -f --cached -r gradle/wrapper
-  removes from git cache files that are supposed to be ignored (all in gradle/wrapper folder)
-
+  removes from git cache files that are supposed to be ignored (all in gradle/wrapper folder) 
