@@ -1,3 +1,10 @@
+# Notes 
+- We should explicitly set "spring.jpa.hibernate.ddl-auto: none" \n
+  when we are using flyway. Otherwise hibernate may drop and drop-and-update the schema after flyway, \n
+  so we may not see any data in our tables. 
+- 
+
+
 # Permission model:
 - Everyone who is authorized can read posts
 - Everyone who is authorized can create posts
@@ -8,7 +15,7 @@
 - Everyone who is authorized can create post comments
 - Everyone who is authorized can ONLY update his own posts comments
 - Everyone who is authorized can ONLY soft delete his own post comments
-
+  seq_post
 - If entity is soft deleted nobody can CUD it.
 - Only admin can hard delete data.
 
