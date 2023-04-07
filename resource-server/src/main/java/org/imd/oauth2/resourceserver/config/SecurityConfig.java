@@ -15,12 +15,15 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-             .securityMatcher("/messages/**")
-                .authorizeHttpRequests()
-                .requestMatchers("/messages/**").hasAuthority("SCOPE_message.read")
-              .and()
-                .oauth2ResourceServer()
-                .jwt(Customizer.withDefaults());
+             .oauth2ResourceServer()
+                .jwt(Customizer.withDefaults())
+             .and()
+             .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+                     .requestMatchers("/posts/*").fullyAuthenticated()
+                     .requestMatchers("/posts/*/comments/**").fullyAuthenticated()
+                     .anyRequest().denyAll()
+              );
+
         return http.build();
     }
     // @formatter:on

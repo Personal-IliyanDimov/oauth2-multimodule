@@ -14,6 +14,7 @@ import org.imd.oauth2.resourceserver.model.mapper.dto.PostMapper;
 import org.imd.oauth2.resourceserver.services.PostService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,12 +38,14 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('posts')")
     ResponseEntity<List<PostDto>> getPosts() {
         final List<Post> posts = postService.findAll();
         return ResponseEntity.ok(postMapper.toPostDtos(posts));
     }
 
     @GetMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('posts')")
     ResponseEntity<PostDto> getPost(@PathVariable(name = "id") final Long id) throws PostNotFoundException {
         checkPostExists(id);
 
@@ -55,6 +58,7 @@ public class PostController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('posts')")
     ResponseEntity<PostDto> createPost(@RequestBody @Validated(CreateGroup.class) @Valid PostDto postDto) throws PostAlreadyExistsException {
         final Post post = postMapper.toPost(postDto);
         final Post createdPost = postService.createPost(post);
@@ -62,6 +66,7 @@ public class PostController {
     }
 
     @PutMapping(value = "/{id}")
+    @PreAuthorize("hasAuthority('posts') and hasPermission(#id, 'org.imd.oauth2.resourceserver.model.entities.PostEntity', 'delete')")
     ResponseEntity<PostDto> updatePost(@PathVariable(name = "id") @NotNull Long id,
                                        @RequestBody @Validated(UpdateGroup.class) @Valid PostDto postDto) throws PostNotFoundException, PostNotUpdatedException {
         checkPostExists(id);
@@ -72,6 +77,7 @@ public class PostController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAuthority('posts') and hasPermission(#id, 'org.imd.oauth2.resourceserver.model.entities.PostEntity', 'delete')")
     ResponseEntity<?> deletePost(@PathVariable(name = "id") Long id) throws PostNotFoundException {
         checkPostExists(id);
 
