@@ -25,6 +25,8 @@ import javax.sql.DataSource;
 @Configuration
 public class AclConfig {
 
+    private static final String EMPTY_ROLE_PREFIX = "";
+
     @Autowired
     private CacheManager cacheManager;
 
@@ -39,6 +41,7 @@ public class AclConfig {
     @Bean
     public MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler() {
         final DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setDefaultRolePrefix(EMPTY_ROLE_PREFIX);
         final AclPermissionEvaluator permissionEvaluator = new AclPermissionEvaluator(aclService());
         expressionHandler.setPermissionEvaluator(permissionEvaluator);
         return expressionHandler;
