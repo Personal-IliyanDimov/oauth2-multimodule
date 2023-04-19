@@ -19,6 +19,8 @@ import org.springframework.security.acls.model.AclCache;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 
 import javax.sql.DataSource;
 
@@ -58,7 +60,21 @@ public class AclConfig {
         return new GrantedAuthorityDefaults("");
     }
 
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
 
+        // can be also configured with http.oauth2ResourceServer().jwt(Customizer.withDefaults())
+        // if we change the customizer and put for JwtConverter instance the appropriate
+        // configured here jwtAuthenticationConverter
+
+        final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix(EMPTY_ROLE_PREFIX);
+
+        final JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+
+        return jwtAuthenticationConverter;
+    }
 
     @Bean
     public JdbcMutableAclService aclService() {
