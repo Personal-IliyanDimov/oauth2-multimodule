@@ -21,7 +21,9 @@ public class SecurityConfig {
                 .jwt(Customizer.withDefaults())
              .and()
              .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+                     .requestMatchers("/posts").fullyAuthenticated()
                      .requestMatchers("/posts/*").fullyAuthenticated()
+                     .requestMatchers("/posts/*/comments").fullyAuthenticated()
                      .requestMatchers("/posts/*/comments/**").fullyAuthenticated()
                      .anyRequest().denyAll()
               );

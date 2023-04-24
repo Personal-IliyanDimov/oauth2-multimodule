@@ -3,7 +3,8 @@
 		"_postman_id": "31f4a87b-c836-404c-ad43-f4912141e686",
 		"name": "OAuth2 multimodule",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "1557278"
+		"_exporter_id": "1557278",
+		"_collection_link": "https://interstellar-capsule-526468.postman.co/workspace/BSH-MDM-Workspace~7aa61c00-36ee-4ada-948d-4d9e3ba6bfb8/collection/1557278-31f4a87b-c836-404c-ad43-f4912141e686?action=share&creator=1557278&source=collection_link"
 	},
 	"item": [
 		{
@@ -220,7 +221,7 @@
 					"response": []
 				},
 				{
-					"name": "Resource Server - Authentication Code Flow - Request Access Token and Invoke Endpoint",
+					"name": "RS - ACF - RAT and Get posts",
 					"event": [
 						{
 							"listen": "test",
@@ -298,7 +299,13 @@
 							]
 						},
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "urlencoded",
 							"urlencoded": []
@@ -313,6 +320,108 @@
 							"path": [
 								"posts",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RS - ACF - RAT and Add post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var token = pm.request.auth.oauth2.get(\"bearer_token_cft\");",
+									"pm.environment.set(\"bearer_token_cft\", token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "scope",
+									"value": "openid profile posts postcomments",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "bearer_token_cft",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "accessToken",
+									"value": "eyJraWQiOiI0M2I2MDJiYy1jNWExLTQ5MmItYmE2ZC1mZTBhMTgxOGU3YWMiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiYXVkIjoibWVzc2FnaW5nLWNsaWVudCIsIm5iZiI6MTY3NzY3MDI1MCwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsIm1lc3NhZ2UucmVhZCIsIm1lc3NhZ2Uud3JpdGUiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDkwIiwiZXhwIjoxNjc3NjcwNTUwLCJpYXQiOjE2Nzc2NzAyNTB9.HXVx3ksgyF8qlVuC0RRV3YZ9KV0BBfFz0mdX5fYB0N9D6T7U7pbEl_xf3Qb_ytD8e4Q1y0uG0XFmm15hJ2ZCYs2BK2EakaaCz_6gsEBxbXo-e77poCQEooBgnKTioZcCY8ZMpFkErGhO996V9RzrDKkh4baU0ltBpg0CWrq-06bZWI7gr7HQHmDruHaRca3kXiFzX2p2TPXREAVRnXGM1ZKsxXh5heAqxVeTHpGuq2VrR_xFAf4k2TiVKDTWnw9G7NJDqpBbaldXU9UQR5ZfQZSVeT-ANX0KAe0oT4--29XKNUKFHA3nnMdqSARK8HMfEzYqWUTQpyXikIUneFXC4g",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://oauth.pstmn.io/v1/callback",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "http://localhost:9090/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "authUrl",
+									"value": "http://localhost:9090/oauth2/authorize",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "messaging-client",
+									"type": "string"
+								},
+								{
+									"key": "clientSecret",
+									"value": "secret",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:8080/posts/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"posts",
+								""
 							]
 						}
 					},
