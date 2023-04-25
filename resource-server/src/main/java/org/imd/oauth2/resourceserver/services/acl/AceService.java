@@ -19,7 +19,9 @@ public class AceService {
 
     private final MutableAclService aclService;
 
-    public void prepareInitialAcl(final Class<?> javaType, final Long id, final String principal) {
+    public void prepareInitialAcl(final Class<?> javaType,
+                                  final Long id,
+                                  final String principal) {
         // Prepare the information we'd like in our access control entry (ACE)
         final ObjectIdentity oi = new ObjectIdentityImpl(javaType, id);
         final Sid sid = new PrincipalSid(principal);
@@ -37,5 +39,4 @@ public class AceService {
         acl.insertAce(acl.getEntries().size(), p, sid, true);
         aclService.updateAcl(acl);
     }
-
 }
