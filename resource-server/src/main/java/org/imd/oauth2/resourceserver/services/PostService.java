@@ -10,9 +10,12 @@ import org.imd.oauth2.resourceserver.model.entities.PostEntity;
 import org.imd.oauth2.resourceserver.model.mapper.domain.PostDomainMapper;
 import org.imd.oauth2.resourceserver.model.repos.PostCommentRepository;
 import org.imd.oauth2.resourceserver.model.repos.PostRepository;
+import org.imd.oauth2.resourceserver.services.acl.AclOperations;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,6 +27,7 @@ public class PostService {
     private final PostDomainMapper pdMapper;
     private final PostRepository postRepository;
     private final PostCommentRepository postCommentRepository;
+    private final AclOperations aclOperations;
 
     @Transactional
     public List<Post> findAll() {
@@ -38,7 +42,7 @@ public class PostService {
     }
 
     @Transactional
-    public Post createPost(Post post) throws PostAlreadyExistsException {
+    public Post createPost(final Post post) throws PostAlreadyExistsException {
         if (Objects.nonNull(post.getId())) {
             throw new IllegalStateException("Post param must be with id null.");
         }
@@ -50,6 +54,11 @@ public class PostService {
 
         PostEntity userEntity = pdMapper.toPostEntity(post);
         PostEntity savedUserEntity = postRepository.save(userEntity);
+
+        aclOperations.createInitialAcl(savedUserEntity.getClass(),
+                                       savedUserEntity.getId(),
+                                       SecurityContextHolder.getContext().getAuthentication());
+
         return pdMapper.toPost(savedUserEntity);
     }
 

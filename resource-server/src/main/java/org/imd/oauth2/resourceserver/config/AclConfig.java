@@ -35,11 +35,6 @@ public class AclConfig {
     @Autowired
     private DataSource dataSource;
 
-    // We expose MethodSecurityExpressionHandler using a static method to ensure that Spring publishes it
-    // before it initializes Spring Security’s method security @Configuration classes.
-    //
-    // Injects ACL into sprint method security.
-
     @Bean
     public MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler() {
         final DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
@@ -78,7 +73,11 @@ public class AclConfig {
 
     @Bean
     public JdbcMutableAclService aclService() {
-        return new JdbcMutableAclService(dataSource, lookupStrategy(), aclCache());
+        final JdbcMutableAclService aclService = new JdbcMutableAclService(dataSource, lookupStrategy(), aclCache());
+        aclService.setSidIdentityQuery("SELECT currval('acl_sid_id_seq')");
+        aclService.setClassIdentityQuery("SELECT currval('acl_class_id_seq')");
+
+        return aclService;
     }
 
     @Bean
