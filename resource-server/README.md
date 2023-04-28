@@ -31,3 +31,6 @@
 
 - Admin is the person who checks the posts and comments to be according to the rules/practices.
   -- Can do everything with the posts and comments except (deleting them). 
+
+# Solve ACL issues 
+- https://github.com/spring-projects/spring-security/issues/5508
