@@ -1,5 +1,6 @@
 package org.imd.oauth2.resourceserver.config;
 
+import org.imd.oauth2.resourceserver.config.security.ResourceServerPermissionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
@@ -109,55 +110,7 @@ public class AclConfig {
 
     @Bean
     public PermissionGrantingStrategy permissionGrantingStrategy() {
-        return new DefaultPermissionGrantingStrategy(new ConsoleAuditLogger()) {
-            private static final Map<Permission, CumulativePermission> MATRIX = new HashMap<>();
-
-            static {
-                final CumulativePermission cpAdministration = new CumulativePermission();
-                cpAdministration.set(BasePermission.ADMINISTRATION);
-                cpAdministration.set(BasePermission.DELETE);
-                cpAdministration.set(BasePermission.CREATE);
-                cpAdministration.set(BasePermission.WRITE);
-                cpAdministration.set(BasePermission.READ);
-
-                final CumulativePermission cpDelete = new CumulativePermission();
-                cpDelete.set(BasePermission.DELETE);
-                cpDelete.set(BasePermission.READ);
-
-                final CumulativePermission cpCreate = new CumulativePermission();
-                cpCreate.set(BasePermission.CREATE);
-                cpCreate.set(BasePermission.WRITE);
-                cpCreate.set(BasePermission.DELETE);
-                cpCreate.set(BasePermission.READ);
-
-                final CumulativePermission cpWrite = new CumulativePermission();
-                cpWrite.set(BasePermission.WRITE);
-                cpWrite.set(BasePermission.READ);
-
-                final CumulativePermission cpRead = new CumulativePermission();
-                cpRead.set(BasePermission.READ);
-
-                MATRIX.put(BasePermission.ADMINISTRATION, cpAdministration);
-                MATRIX.put(BasePermission.DELETE, cpDelete);
-                MATRIX.put(BasePermission.CREATE, cpCreate);
-                MATRIX.put(BasePermission.WRITE, cpWrite);
-                MATRIX.put(BasePermission.READ, cpRead);
-            }
-
-            @Override
-            protected boolean isGranted(AccessControlEntry ace, Permission p) {
-                final CumulativePermission cp = MATRIX.get(p);
-                if (cp != null) {
-                    return compare(cp, p);
-                }
-
-                return ace.getPermission().getMask() == p.getMask();
-            }
-
-            private boolean compare(final CumulativePermission master, final Permission pretender) {
-                return (master.getMask() & pretender.getMask()) != 0;
-            }
-        };
+        return new ResourceServerPermissionStrategy(new ConsoleAuditLogger());
     }
 
     @Bean
