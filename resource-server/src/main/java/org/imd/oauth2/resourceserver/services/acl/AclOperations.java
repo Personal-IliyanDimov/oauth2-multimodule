@@ -25,10 +25,10 @@ public class AclOperations {
         // Prepare the information we'd like in our access control entry (ACE)
         final ObjectIdentity oi = new ObjectIdentityImpl(javaType, id);
         final Sid sid = new PrincipalSid(authentication);
-        final Permission permission = BasePermission.ADMINISTRATION;
+        final Permission permission = BasePermission.CREATE;
 
         // Create or update the relevant ACL
-        MutableAcl acl = null;
+        MutableAcl acl;
         try {
             acl = (MutableAcl) aclService.readAclById(oi);
         } catch (NotFoundException nfe) {
