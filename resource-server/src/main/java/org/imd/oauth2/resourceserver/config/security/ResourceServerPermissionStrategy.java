@@ -10,7 +10,7 @@ import org.springframework.security.acls.model.Permission;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ResourceServerPermissionStrategy extends DefaultPermissionGrantingStrategy {
+public final class ResourceServerPermissionStrategy extends DefaultPermissionGrantingStrategy {
     private static final Map<Permission, CumulativePermission> MATRIX = new HashMap<>();
 
     static {

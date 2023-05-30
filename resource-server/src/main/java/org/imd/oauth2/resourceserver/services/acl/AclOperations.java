@@ -19,6 +19,14 @@ public class AclOperations {
 
     private final MutableAclService aclService;
 
+    /**
+     * Creates the initial ACL when CREATING an entry
+     * for the first time.
+     *
+     * @param javaType Entity class for which we create the entry.
+     * @param id Identifier of the entity object
+     * @param authentication The user authentication
+     */
     public void createInitialAcl(final Class<?> javaType,
                                  final Long id,
                                  final Authentication authentication) {
@@ -38,5 +46,20 @@ public class AclOperations {
         // Now grant some permissions via an access control entry (ACE)
         acl.insertAce(acl.getEntries().size(), permission, sid, true);
         aclService.updateAcl(acl);
+    }
+
+    /**
+     * Remove the whole ACL when deleting the entity completely.
+     *
+     * @param javaType
+     * @param id
+     * @param authentication
+     */
+    public void removeAcl(final Class<?> javaType,
+                          final Long id,
+                          final Authentication authentication) {
+
+        // DELETE THE WHOLE ACL
+
     }
 }
