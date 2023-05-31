@@ -58,8 +58,8 @@ public class AclOperations {
     public void removeAcl(final Class<?> javaType,
                           final Long id,
                           final Authentication authentication) {
-
-        // DELETE THE WHOLE ACL
-
+        // Delete the whole ACL
+        final ObjectIdentity oi = new ObjectIdentityImpl(javaType, id);
+        aclService.deleteAcl(oi, true);
     }
 }

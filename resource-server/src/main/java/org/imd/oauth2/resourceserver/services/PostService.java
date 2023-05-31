@@ -10,7 +10,7 @@ import org.imd.oauth2.resourceserver.model.entities.PostEntity;
 import org.imd.oauth2.resourceserver.model.mapper.domain.PostDomainMapper;
 import org.imd.oauth2.resourceserver.model.repos.PostCommentRepository;
 import org.imd.oauth2.resourceserver.model.repos.PostRepository;
-import org.imd.oauth2.resourceserver.services.acl.AclOperations;
+import org.imd.oauth2.resourceserver.services.acl.PostAclOperations;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,7 @@ public class PostService {
     private final PostDomainMapper pdMapper;
     private final PostRepository postRepository;
     private final PostCommentRepository postCommentRepository;
-    private final AclOperations aclOperations;
+    private final PostAclOperations postAclOperations;
 
     @Transactional
     public List<Post> findAll() {
@@ -55,9 +55,8 @@ public class PostService {
         PostEntity userEntity = pdMapper.toPostEntity(post);
         PostEntity savedUserEntity = postRepository.save(userEntity);
 
-        aclOperations.createInitialAcl(savedUserEntity.getClass(),
-                                       savedUserEntity.getId(),
-                                       SecurityContextHolder.getContext().getAuthentication());
+        postAclOperations.createPostAcl(savedUserEntity.getId(),
+                                               SecurityContextHolder.getContext().getAuthentication());
 
         return pdMapper.toPost(savedUserEntity);
     }
@@ -93,6 +92,9 @@ public class PostService {
         }
 
         postRepository.deleteById(id);
+
+        postAclOperations.removePostAcl(id,
+                                        SecurityContextHolder.getContext().getAuthentication());
     }
 
     @Transactional
