@@ -3,6 +3,7 @@ package org.imd.oauth2.resourceserver.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.imd.oauth2.resourceserver.config.security.Authorities;
 import org.imd.oauth2.resourceserver.exception.post.PostAlreadyExistsException;
 import org.imd.oauth2.resourceserver.exception.post.PostNotFoundException;
 import org.imd.oauth2.resourceserver.exception.post.PostNotUpdatedException;
@@ -12,7 +13,7 @@ import org.imd.oauth2.resourceserver.model.dto.group.CreateGroup;
 import org.imd.oauth2.resourceserver.model.dto.group.UpdateGroup;
 import org.imd.oauth2.resourceserver.model.mapper.dto.PostMapper;
 import org.imd.oauth2.resourceserver.services.PostService;
-import org.imd.oauth2.resourceserver.services.acl.AclOperations;
+import org.imd.oauth2.resourceserver.services.acl.AclTargetTypes;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,20 +35,19 @@ import java.util.Optional;
 @Validated
 @RequiredArgsConstructor
 public class PostController {
-    private static final String AUTHORITY_POSTS = "posts";
 
     private final PostMapper postMapper;
     private final PostService postService;
 
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('" + AUTHORITY_POSTS + "')")
+    @PreAuthorize("hasAuthority('" + Authorities.POSTS + "')")
     ResponseEntity<List<PostDto>> getPosts() {
         final List<Post> posts = postService.findAll();
         return ResponseEntity.ok(postMapper.toPostDtos(posts));
     }
 
     @GetMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('" + AUTHORITY_POSTS + "')")
+    @PreAuthorize("hasAuthority('" + Authorities.POSTS + "')")
     ResponseEntity<PostDto> getPost(@PathVariable(name = "id") final Long id) throws PostNotFoundException {
         checkPostExists(id);
 
@@ -60,7 +60,7 @@ public class PostController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('" + AUTHORITY_POSTS + "')")
+    @PreAuthorize("hasAuthority('" + Authorities.POSTS + "')")
     ResponseEntity<PostDto> createPost(@RequestBody @Validated(CreateGroup.class) @Valid PostDto postDto) throws PostAlreadyExistsException {
         final Post post = postMapper.toPost(postDto);
         final Post createdPost = postService.createPost(post);
@@ -68,7 +68,7 @@ public class PostController {
     }
 
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('" + AUTHORITY_POSTS + "') and hasPermission(#id, 'org.imd.oauth2.resourceserver.model.entities.PostEntity', 'delete')")
+    @PreAuthorize("hasAuthority('" + Authorities.POSTS + "') and hasPermission(#id, " + AclTargetTypes.TT_POST + ", 'update')")
     ResponseEntity<PostDto> updatePost(@PathVariable(name = "id") @NotNull Long id,
                                        @RequestBody @Validated(UpdateGroup.class) @Valid PostDto postDto) throws PostNotFoundException, PostNotUpdatedException {
         checkPostExists(id);
@@ -79,7 +79,7 @@ public class PostController {
     }
 
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('" + AUTHORITY_POSTS + "') and hasPermission(#id, 'org.imd.oauth2.resourceserver.model.entities.PostEntity', 'delete')")
+    @PreAuthorize("hasAuthority('" + Authorities.POSTS + "') and hasPermission(#id, " + AclTargetTypes.TT_POST + ", 'delete')")
     ResponseEntity<?> deletePost(@PathVariable(name = "id") Long id) throws PostNotFoundException {
         checkPostExists(id);
 

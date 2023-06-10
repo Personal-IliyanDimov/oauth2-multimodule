@@ -14,6 +14,8 @@ public class PostAclOperations {
                               final Authentication authentication) {
         aclOperations.createInitialAcl(PostEntity.class,
                                        postId,
+                                       null,
+                                       null,
                                        authentication);
     }
 

@@ -2,6 +2,7 @@ package org.imd.oauth2.resourceserver.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.imd.oauth2.resourceserver.config.security.Authorities;
 import org.imd.oauth2.resourceserver.exception.post.PostNotFoundException;
 import org.imd.oauth2.resourceserver.exception.post.PostNotUpdatedException;
 import org.imd.oauth2.resourceserver.exception.postcomment.PostCommentAlreadyExistsException;
@@ -14,8 +15,10 @@ import org.imd.oauth2.resourceserver.model.dto.group.UpdateGroup;
 import org.imd.oauth2.resourceserver.model.mapper.dto.PostCommentMapper;
 import org.imd.oauth2.resourceserver.services.PostCommentService;
 import org.imd.oauth2.resourceserver.services.PostService;
+import org.imd.oauth2.resourceserver.services.acl.AclTargetTypes;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +43,7 @@ public class PostCommentController {
     private final PostCommentService pcService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('" + Authorities.POST_COMMENTS + "')")
     ResponseEntity<List<PostCommentDto>> getPostComments(@PathVariable(name = "pid") final Long pid) throws PostNotFoundException {
         checkPostExists(pid);
 
@@ -48,6 +52,7 @@ public class PostCommentController {
     }
 
     @GetMapping(value = "/{cid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('" + Authorities.POST_COMMENTS + "')")
     ResponseEntity<PostCommentDto> getPostComment(@PathVariable(name = "pid") final Long pid,
                                                   @PathVariable(name = "cid") final Long cid) throws PostNotFoundException, PostCommentNotFoundException {
         checkPostExists(pid);
@@ -62,6 +67,7 @@ public class PostCommentController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('" + Authorities.POST_COMMENTS + "')")
     ResponseEntity<PostCommentDto> createPostComment(@PathVariable(name = "pid") final Long pid,
                                                      @RequestBody @Validated(CreateGroup.class) @Valid PostCommentDto pcDto)
             throws PostNotFoundException, PostCommentAlreadyExistsException {
@@ -74,6 +80,7 @@ public class PostCommentController {
     }
 
     @PutMapping(value = "/{cid}")
+    @PreAuthorize("hasAuthority('" + Authorities.POST_COMMENTS + "') and hasPermission(#cid, " + AclTargetTypes.TT_POST_COMMENT + ", 'update')")
     ResponseEntity<PostCommentDto> updatePostComment(@PathVariable(name = "pid") final Long pid,
                                                      @PathVariable(name = "cid") final Long cid,
                                                      @RequestBody @Validated(UpdateGroup.class) @Valid PostCommentDto pcDto)
@@ -88,12 +95,13 @@ public class PostCommentController {
     }
 
     @DeleteMapping(value = "/{cid}")
-    ResponseEntity<?> deletePost(@PathVariable(name = "pid") final Long pid,
+    @PreAuthorize("hasAuthority('" + Authorities.POST_COMMENTS + "') and hasPermission(#cid, " + AclTargetTypes.TT_POST_COMMENT + ", 'delete')")
+    ResponseEntity<?> deletePostComment(@PathVariable(name = "pid") final Long pid,
                                  @PathVariable(name = "cid") final Long cid) throws PostNotFoundException, PostCommentNotFoundException {
         checkPostExists(pid);
         checkPostCommentExists(pid, cid);
 
-        pcService.deletePostById(pid, cid);
+        pcService.deletePostCommentById(pid, cid);
         return ResponseEntity.ok().build();
     }
 

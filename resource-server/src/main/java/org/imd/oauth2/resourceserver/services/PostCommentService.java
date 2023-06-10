@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 
 import org.imd.oauth2.resourceserver.exception.post.PostNotFoundException;
 import org.imd.oauth2.resourceserver.exception.postcomment.PostCommentNotFoundException;
+import org.imd.oauth2.resourceserver.model.domain.Post;
 import org.imd.oauth2.resourceserver.model.domain.PostComment;
 import org.imd.oauth2.resourceserver.model.entities.PostCommentEntity;
 import org.imd.oauth2.resourceserver.model.entities.PostEntity;
 import org.imd.oauth2.resourceserver.model.mapper.domain.PostCommentDomainMapper;
+import org.imd.oauth2.resourceserver.model.mapper.domain.PostDomainMapper;
 import org.imd.oauth2.resourceserver.model.repos.PostCommentRepository;
-import org.imd.oauth2.resourceserver.model.repos.PostRepository;
+import org.imd.oauth2.resourceserver.services.acl.PostCommentAclOperations;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +25,11 @@ import java.util.Optional;
 public class PostCommentService {
 
     private final PostCommentDomainMapper pcdMapper;
-    private final PostRepository pRepository;
     private final PostCommentRepository pcRepository;
+
+    private final PostService postService;
+    private final PostDomainMapper pdMapper;
+    private final PostCommentAclOperations pcAclOperations;
 
     @Transactional
     public List<PostComment> findAll(Long pid) {
@@ -51,13 +57,18 @@ public class PostCommentService {
         }
         final PostCommentEntity pcEntity = pcdMapper.toPostCommentEntity(pc);
 
-        final Optional<PostEntity> postOptional = pRepository.findById(pid);
-        PostEntity pEntity = postOptional.orElseThrow(() -> new PostNotFoundException(pid));
+        final Optional<Post> postOptional = postService.findPost(pid);
+        final Post post = postOptional.orElseThrow(() -> new PostNotFoundException(pid));
+        PostEntity pEntity = pdMapper.toPostEntity(post);
 
-        pcEntity.setPost(postOptional.get());
+        pcEntity.setPost(pEntity);
         pEntity.addComment(pcEntity);
 
         final PostCommentEntity savedPcEntity = pcRepository.save(pcEntity);
+
+        pcAclOperations.createPostCommentAcl(savedPcEntity.getId(), pEntity.getId(),
+                SecurityContextHolder.getContext().getAuthentication());
+
         return pcdMapper.toPostComment(savedPcEntity);
     }
 
@@ -79,16 +90,19 @@ public class PostCommentService {
     }
 
     @Transactional
-    public void deletePostById(Long pid, Long cid) {
+    public void deletePostCommentById(Long pid, Long cid) {
         if (postCommentExists(pid, cid)) {
             pcRepository.deleteById(cid);
         }
+
+        pcAclOperations.removePostCommentAcl(cid,
+            SecurityContextHolder.getContext().getAuthentication());
     }
 
     @Transactional
     public boolean postCommentExists(Long pid, Long cid) {
         boolean result = false;
-        Optional<PostCommentEntity> pcOptional = pcRepository.findById(cid);
+        final Optional<PostCommentEntity> pcOptional = pcRepository.findById(cid);
         if (! pcOptional.isEmpty()) {
             result = pcOptional.get().getPost().getId().equals(pid);
         }
@@ -97,7 +111,7 @@ public class PostCommentService {
     }
 
     private void checkPostExists(Long pid) throws PostNotFoundException {
-        if (! pRepository.existsById(pid)) {
+        if (! postService.postExists(pid)) {
             throw new PostNotFoundException(pid);
         }
     }

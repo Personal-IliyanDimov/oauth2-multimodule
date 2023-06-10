@@ -15,7 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,7 +25,6 @@ public class PostService {
 
     private final PostDomainMapper pdMapper;
     private final PostRepository postRepository;
-    private final PostCommentRepository postCommentRepository;
     private final PostAclOperations postAclOperations;
 
     @Transactional
@@ -56,7 +54,7 @@ public class PostService {
         PostEntity savedUserEntity = postRepository.save(userEntity);
 
         postAclOperations.createPostAcl(savedUserEntity.getId(),
-                                               SecurityContextHolder.getContext().getAuthentication());
+                                        SecurityContextHolder.getContext().getAuthentication());
 
         return pdMapper.toPost(savedUserEntity);
     }

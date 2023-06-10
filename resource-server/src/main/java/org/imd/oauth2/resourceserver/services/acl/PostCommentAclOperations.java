@@ -16,6 +16,8 @@ public class PostCommentAclOperations {
                                      final Authentication authentication) {
         aclOperations.createInitialAcl(PostCommentEntity.class,
                                        postCommentId,
+                                       PostEntity.class,
+                                       postId,
                                        authentication);
     }
 

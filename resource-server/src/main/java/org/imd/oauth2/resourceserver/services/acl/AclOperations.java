@@ -23,9 +23,11 @@ public class AclOperations {
      * Creates the initial ACL when CREATING an entry
      * for the first time.
      *
-     * @param javaType Entity class for which we create the entry.
-     * @param id Identifier of the entity object
-     * @param authentication The user authentication
+     * @param childJavaType
+     * @param childId
+     * @param parentJavaType
+     * @param parentId
+     * @param authentication
      */
     public void createInitialAcl(final Class<?> childJavaType,
                                  final Long childId,
@@ -47,14 +49,17 @@ public class AclOperations {
         }
 
         // Create or update the relevant parent ACL
-        MutableAcl parentAcl;
-        try {
-            parentAcl = (MutableAcl) aclService.readAclById(parentObjId);
-        } catch (NotFoundException nfe) {
-            parentAcl = aclService.createAcl(parentObjId);
+        MutableAcl parentAcl = null;
+        if ((parentJavaType != null) && (parentId != null)) {
+            try {
+                parentAcl = (MutableAcl) aclService.readAclById(parentObjId);
+            } catch (NotFoundException nfe) {
+                parentAcl = aclService.createAcl(parentObjId);
+            }
         }
 
         // Now grant some permissions via an access control entry (ACE)
+        childAcl.setParent(parentAcl);
         childAcl.insertAce(childAcl.getEntries().size(), childPermission, sid, true);
         aclService.updateAcl(childAcl);
     }
